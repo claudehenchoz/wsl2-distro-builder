@@ -1,0 +1,38 @@
+- hosts: localhost
+  become: yes
+  tasks:
+    - name: Update apt package index
+      apt:
+        update_cache: yes
+
+    - name: Install essential packages
+      apt:
+        name:
+          - curl
+          - git
+          - vim
+          - htop
+          - python3
+          - python3-pip
+        state: present
+
+    - name: Ensure Ansible is installed
+      pip:
+        name: ansible
+        state: latest
+
+    - name: Set timezone
+      command: timedatectl set-timezone UTC
+
+    - name: Create a directory for Ansible pull
+      file:
+        path: /etc/ansible
+        state: directory
+
+    - name: Copy Ansible pull configuration
+      copy:
+        src: /etc/ansible/ansible-pull-config.yml
+        dest: /etc/ansible/ansible-pull-config.yml
+        owner: root
+        group: root
+        mode: '0644'

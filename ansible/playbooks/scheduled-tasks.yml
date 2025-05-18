@@ -1,0 +1,31 @@
+- hosts: localhost
+  tasks:
+    - name: Ensure Ansible pull is installed
+      apt:
+        name: ansible
+        state: present
+
+    - name: Create a directory for Ansible pull
+      file:
+        path: /etc/ansible/pull
+        state: directory
+
+    - name: Set up Ansible pull configuration
+      copy:
+        src: /etc/ansible/pull-config.yml
+        dest: /etc/ansible/pull/pull-config.yml
+
+    - name: Schedule Ansible pull using cron
+      cron:
+        name: "Run Ansible pull daily"
+        minute: "0"
+        hour: "0"
+        job: "ansible-pull -U https://github.com/your-repo/your-playbooks.git -i inventory -d /etc/ansible/pull"
+        state: present
+
+    - name: Ensure the cron job is set up correctly
+      command: crontab -l
+      register: cron_jobs
+
+    - debug:
+        var: cron_jobs.stdout_lines

@@ -1,0 +1,10 @@
+repository: my-wsl2-distro
+playbook: ansible-pull
+repo: https://github.com/myusername/my-wsl2-distro.git
+branch: main
+interval: 86400
+inventory: /etc/ansible/hosts
+verbosity: 1
+retry_files_enabled: false
+clean: true
+update: true

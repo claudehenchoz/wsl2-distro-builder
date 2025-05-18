@@ -1,0 +1,10 @@
+[defaults]
+inventory = /etc/ansible/hosts
+remote_user = ubuntu
+host_key_checking = False
+
+[local]
+localhost ansible_connection=local
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
