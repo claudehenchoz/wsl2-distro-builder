@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Check if first-run has been completed
+if [ -f /etc/wsl-setup-complete ]; then
+    exit 0
+fi
+
+# Welcome message
+echo "===== WSL Distribution First-Run Setup ====="
+echo "Let's create a new user account for this WSL distribution."
+echo ""
+
+# Prompt for username
+read -p "Enter username: " USERNAME
+
+# Check if username is valid
+while [[ -z "$USERNAME" || "$USERNAME" =~ [^a-z0-9_] ]]; do
+    echo "Error: Username must consist of lowercase letters, digits, or underscore"
+    read -p "Enter username: " USERNAME
+done
+
+# Check if user already exists
+if id "$USERNAME" &>/dev/null; then
+    echo "User '$USERNAME' already exists. Skipping user creation."
+else
+    # Create the user
+    useradd -m -G sudo -s /bin/bash "$USERNAME"
+    
+    # Set password
+    echo "Setting password for $USERNAME"
+    passwd "$USERNAME"
+    
+    # Update default user in wsl.conf
+    sed -i "s/default=root/default=$USERNAME/" /etc/wsl.conf
+    
+    echo "User '$USERNAME' has been created and added to sudo group."
+    echo "Next time you open this WSL distribution, you'll be logged in as '$USERNAME'."
+fi
+
+# Mark setup as complete
+touch /etc/wsl-setup-complete
+
+# Give the user time to read the completion message
+echo ""
+echo "Setup complete! Press Enter to continue..."
+read
+
+# Terminate WSL to apply changes
+wsl.exe --terminate custubuntu
+# Note: The above command assumes the WSL distribution is named "custubuntu".
