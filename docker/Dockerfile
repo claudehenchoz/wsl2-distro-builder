@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:24.04
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
@@ -7,12 +7,15 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y \
     software-properties-common \
+    sudo \
     cron \
     curl \
     python3 \
     python3-pip \
     git \
     ansible \
+    tmux \
+    mc \
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
